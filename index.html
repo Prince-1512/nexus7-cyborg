@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS-7 // Augmentation Clinic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink: #0a0a08;
+  --paper: #f0ebe0;
+  --acid: #c8ff00;
+  --blood: #cc2200;
+  --steel: #8a8a7a;
+  --rust: #7a4a30;
+  --dim: #1a1a16;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'IBM Plex Mono', monospace;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* custom cursor */
+#cursor {
+  position: fixed;
+  width: 12px; height: 12px;
+  border: 1px solid var(--acid);
+  border-radius: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.15s, height 0.15s, background 0.15s;
+  mix-blend-mode: difference;
+}
+#cursor.hover { width: 40px; height: 40px; background: rgba(200,255,0,0.1); }
+
+/* noise overlay */
+.noise {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 9990;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+}
+
+/* ─── TICKER ─── */
+.ticker-wrap {
+  background: var(--acid);
+  color: var(--ink);
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 6px 0;
+  position: sticky;
+  top: 0; z-index: 800;
+}
+.ticker-inner {
+  display: inline-block;
+  animation: ticker 22s linear infinite;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ─── NAV ─── */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 2rem 3rem 1.5rem;
+  border-bottom: 1px solid rgba(240,235,224,0.08);
+  position: relative;
+}
+
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.8rem;
+  color: var(--paper);
+  letter-spacing: 6px;
+  line-height: 1;
+  position: relative;
+}
+.nav-logo sup {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.5rem;
+  color: var(--acid);
+  letter-spacing: 2px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+
+.nav-right {
+  text-align: right;
+  font-size: 0.62rem;
+  color: var(--steel);
+  letter-spacing: 1px;
+  line-height: 2;
+}
+.nav-right a {
+  color: var(--paper);
+  text-decoration: none;
+  margin-left: 2rem;
+  transition: color 0.2s;
+}
+.nav-right a:hover { color: var(--acid); }
+
+.nav-status {
+  position: absolute;
+  bottom: -1px; left: 3rem;
+  font-size: 0.6rem;
+  color: var(--acid);
+  letter-spacing: 3px;
+  border-bottom: 2px solid var(--acid);
+  padding-bottom: 0;
+}
+
+/* ─── HERO ─── */
+#hero {
+  min-height: 92vh;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  grid-template-rows: 1fr auto;
+  gap: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-left {
+  padding: 5rem 3rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid rgba(240,235,224,0.08);
+}
+
+.hero-eyebrow {
+  font-size: 0.65rem;
+  letter-spacing: 4px;
+  color: var(--steel);
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 30px; height: 1px;
+  background: var(--steel);
+}
+
+.hero-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(5rem, 12vw, 10rem);
+  line-height: 0.88;
+  letter-spacing: -1px;
+  color: var(--paper);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-headline .word-flesh {
+  color: var(--paper);
+  display: block;
+}
+.hero-headline .word-is {
+  color: var(--steel);
+  display: block;
+  font-size: 0.55em;
+  letter-spacing: 8px;
+  padding-left: 4px;
+  margin: 0.3em 0;
+}
+.hero-headline .word-optional {
+  color: var(--acid);
+  display: block;
+  text-shadow: 0 0 60px rgba(200,255,0,0.4);
+  position: relative;
+}
+.hero-headline .word-optional::after {
+  content: '™';
+  font-size: 0.2em;
+  vertical-align: super;
+  color: var(--steel);
+}
+
+.hero-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding-top: 3rem;
+  border-top: 1px solid rgba(240,235,224,0.08);
+}
+
+.hero-desc {
+  max-width: 380px;
+  font-size: 0.78rem;
+  line-height: 1.8;
+  color: var(--steel);
+}
+.hero-desc strong { color: var(--paper); font-weight: 400; }
+
+.hero-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.btn-main {
+  background: var(--acid);
+  color: var(--ink);
+  padding: 0.9rem 2.2rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border: none;
+  cursor: none;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.15s, transform 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-main::after {
+  content: '→';
+  margin-left: 8px;
+}
+.btn-main:hover { background: #d4ff1a; transform: translateX(-3px); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--steel);
+  padding: 0.9rem 2.2rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border: 1px solid rgba(240,235,224,0.15);
+  cursor: none;
+  text-decoration: none;
+  display: inline-block;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-ghost:hover { color: var(--paper); border-color: var(--paper); }
+
+/* hero right panel */
+.hero-right {
+  background: var(--dim);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 3rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-right::before {
+  content: 'N7';
+  position: absolute;
+  top: -2rem; right: -1rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16rem;
+  color: rgba(240,235,224,0.03);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.spec-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.spec-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(240,235,224,0.07);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  font-size: 0.7rem;
+  transition: background 0.2s;
+  padding-left: 0.5rem; padding-right: 0.5rem;
+}
+.spec-item:hover { background: rgba(200,255,0,0.04); }
+.spec-item:first-child { border-top: 1px solid rgba(240,235,224,0.07); }
+
+.spec-label { color: var(--steel); letter-spacing: 1px; }
+.spec-val { color: var(--paper); font-weight: 700; letter-spacing: 1px; text-align: right; }
+.spec-val.green { color: var(--acid); }
+.spec-val.red { color: var(--blood); }
+
+.hero-tag {
+  margin-bottom: 2rem;
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  color: var(--acid);
+  text-transform: uppercase;
+}
+
+/* ─── DIVIDER ─── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(240,235,224,0.12), transparent);
+}
+
+/* ─── SERVICES ─── */
+#services {
+  padding: 7rem 3rem;
+  position: relative;
+}
+
+.services-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  margin-bottom: 5rem;
+  align-items: end;
+}
+
+.services-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 6vw, 5rem);
+  line-height: 0.9;
+  letter-spacing: 2px;
+}
+.services-title span { color: var(--acid); }
+
+.services-intro {
+  font-size: 0.75rem;
+  line-height: 1.9;
+  color: var(--steel);
+  border-left: 2px solid rgba(200,255,0,0.3);
+  padding-left: 1.5rem;
+}
+
+/* Asymmetric service layout */
+.services-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr;
+  grid-template-rows: auto auto;
+  gap: 1px;
+  background: rgba(240,235,224,0.06);
+}
+
+.svc {
+  background: var(--ink);
+  padding: 2.5rem 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.25s;
+}
+.svc:hover { background: var(--dim); }
+
+.svc::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0; height: 2px;
+  background: var(--acid);
+  transition: width 0.35s ease;
+}
+.svc:hover::after { width: 100%; }
+
+.svc-num {
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  color: var(--blood);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.svc-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--paper);
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  letter-spacing: -0.5px;
+}
+
+.svc-desc {
+  font-size: 0.72rem;
+  line-height: 1.8;
+  color: var(--steel);
+}
+
+.svc-price {
+  margin-top: 2rem;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  color: var(--acid);
+}
+
+.svc.span2 { grid-column: span 2; }
+.svc.tall { grid-row: span 1; }
+
+.svc-big-num {
+  position: absolute;
+  bottom: -1rem; right: 1rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 8rem;
+  color: rgba(240,235,224,0.03);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ─── WARNING BAND ─── */
+.warning-band {
+  background: var(--blood);
+  padding: 1.2rem 3rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  overflow: hidden;
+}
+.warning-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  animation: warningPulse 1.5s ease-in-out infinite;
+}
+@keyframes warningPulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.warning-text {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+  animation: scrollWarn 18s linear infinite;
+}
+@keyframes scrollWarn {
+  from { transform: translateX(0); }
+  to { transform: translateX(-30%); }
+}
+
+/* ─── PROCESS ─── */
+#process {
+  padding: 7rem 3rem;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 6rem;
+  align-items: start;
+}
+
+.process-sidebar {
+  position: sticky;
+  top: 5rem;
+}
+
+.process-label {
+  font-size: 0.6rem;
+  letter-spacing: 4px;
+  color: var(--steel);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.process-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.5rem;
+  line-height: 0.9;
+  letter-spacing: 2px;
+  color: var(--paper);
+  margin-bottom: 2rem;
+}
+
+.process-note {
+  font-size: 0.68rem;
+  line-height: 1.9;
+  color: var(--steel);
+}
+
+.process-steps {
+  display: flex;
+  flex-direction: column;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 2rem;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid rgba(240,235,224,0.07);
+  align-items: start;
+  transition: padding-left 0.3s;
+}
+.step:hover { padding-left: 1rem; }
+.step:first-child { border-top: 1px solid rgba(240,235,224,0.07); }
+
+.step-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  color: rgba(240,235,224,0.15);
+  line-height: 1;
+  text-align: center;
+}
+
+.step-body {}
+
+.step-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--paper);
+  margin-bottom: 0.6rem;
+  letter-spacing: 0.5px;
+}
+
+.step-desc {
+  font-size: 0.72rem;
+  line-height: 1.8;
+  color: var(--steel);
+}
+
+.step-meta {
+  margin-top: 0.8rem;
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  color: var(--acid);
+}
+
+/* ─── STATS ─── */
+#stats {
+  background: var(--dim);
+  padding: 6rem 3rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid rgba(240,235,224,0.07);
+  border-bottom: 1px solid rgba(240,235,224,0.07);
+}
+
+.stat-block {
+  padding: 2rem;
+  border-right: 1px solid rgba(240,235,224,0.07);
+  position: relative;
+}
+.stat-block:last-child { border-right: none; }
+
+.stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 4.5rem;
+  line-height: 1;
+  color: var(--paper);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.stat-num.acid { color: var(--acid); }
+
+.stat-desc {
+  font-size: 0.65rem;
+  letter-spacing: 1.5px;
+  color: var(--steel);
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+/* ─── TESTIMONIALS ─── */
+#testimonials {
+  padding: 7rem 3rem;
+}
+
+.test-header {
+  margin-bottom: 4rem;
+}
+
+.test-label {
+  font-size: 0.6rem;
+  letter-spacing: 4px;
+  color: var(--steel);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.test-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  letter-spacing: 2px;
+}
+.test-title span { color: var(--acid); }
+
+.test-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 1px;
+  background: rgba(240,235,224,0.06);
+}
+
+.test-card {
+  background: var(--ink);
+  padding: 2.5rem 2rem;
+  transition: background 0.2s;
+}
+.test-card:hover { background: var(--dim); }
+
+.test-quote {
+  font-size: 0.78rem;
+  line-height: 1.9;
+  color: var(--paper);
+  margin-bottom: 2rem;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.test-source {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.test-avatar {
+  width: 36px; height: 36px;
+  background: var(--dim);
+  border: 1px solid rgba(240,235,224,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--acid);
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+.test-name {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  color: var(--paper);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.test-role {
+  font-size: 0.6rem;
+  color: var(--steel);
+  margin-top: 2px;
+  letter-spacing: 1px;
+}
+
+.test-aug {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(240,235,224,0.07);
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  color: var(--acid);
+  text-transform: uppercase;
+}
+
+/* ─── BOOK ─── */
+#book {
+  padding: 7rem 3rem;
+  background: var(--paper);
+  color: var(--ink);
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 5rem;
+  align-items: center;
+}
+
+.book-left {}
+
+.book-label {
+  font-size: 0.6rem;
+  letter-spacing: 4px;
+  color: var(--rust);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.book-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  line-height: 0.9;
+  letter-spacing: 1px;
+  color: var(--ink);
+  margin-bottom: 2rem;
+}
+.book-title span { color: var(--blood); }
+
+.book-desc {
+  font-size: 0.75rem;
+  line-height: 1.9;
+  color: #444;
+  max-width: 460px;
+}
+
+.book-right {
+  background: var(--ink);
+  padding: 2.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  color: var(--steel);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  background: rgba(240,235,224,0.05);
+  border: 1px solid rgba(240,235,224,0.12);
+  color: var(--paper);
+  padding: 0.75rem 1rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+.form-input:focus { border-color: var(--acid); }
+.form-input::placeholder { color: rgba(240,235,224,0.2); }
+
+.form-select {
+  width: 100%;
+  background: rgba(240,235,224,0.05);
+  border: 1px solid rgba(240,235,224,0.12);
+  color: var(--paper);
+  padding: 0.75rem 1rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+  border-radius: 0;
+  cursor: none;
+}
+.form-select:focus { border-color: var(--acid); }
+.form-select option { background: var(--ink); }
+
+.form-disclaimer {
+  font-size: 0.6rem;
+  color: var(--steel);
+  line-height: 1.7;
+  margin-top: 1rem;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--ink);
+  border-top: 1px solid rgba(240,235,224,0.07);
+  padding: 3rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.footer-brand .nav-logo { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+
+.footer-brand p {
+  font-size: 0.65rem;
+  color: var(--steel);
+  line-height: 1.8;
+  margin-top: 0.75rem;
+}
+
+.footer-col-title {
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  color: var(--acid);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.footer-links a {
+  font-size: 0.72rem;
+  color: var(--steel);
+  text-decoration: none;
+  transition: color 0.2s;
+  letter-spacing: 0.5px;
+}
+.footer-links a:hover { color: var(--paper); }
+
+.footer-bottom {
+  grid-column: 1 / -1;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(240,235,224,0.07);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.6rem;
+  color: rgba(138,138,122,0.5);
+  letter-spacing: 1px;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* stagger children */
+.reveal-parent .reveal:nth-child(1) { transition-delay: 0s; }
+.reveal-parent .reveal:nth-child(2) { transition-delay: 0.1s; }
+.reveal-parent .reveal:nth-child(3) { transition-delay: 0.2s; }
+.reveal-parent .reveal:nth-child(4) { transition-delay: 0.3s; }
+
+/* hero entry */
+.hero-eyebrow { animation: fadeUp 0.5s ease 0.1s both; }
+.hero-headline .word-flesh { animation: fadeUp 0.6s ease 0.2s both; }
+.hero-headline .word-is { animation: fadeUp 0.6s ease 0.35s both; }
+.hero-headline .word-optional { animation: fadeUp 0.6s ease 0.5s both; }
+.hero-bottom { animation: fadeUp 0.6s ease 0.7s both; }
+.hero-right { animation: fadeUp 0.7s ease 0.4s both; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  #hero { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+  nav { padding: 1.5rem; }
+  .nav-right { display: none; }
+  section, #services, #process, #testimonials, #book, footer { padding: 4rem 1.5rem; }
+  #stats { grid-template-columns: 1fr 1fr; }
+  .stat-block:nth-child(2) { border-right: none; }
+  .stat-block:nth-child(3) { border-right: 1px solid rgba(240,235,224,0.07); }
+  .services-header { grid-template-columns: 1fr; gap: 2rem; }
+  .services-layout { grid-template-columns: 1fr; }
+  .svc.span2 { grid-column: span 1; }
+  #process { grid-template-columns: 1fr; gap: 3rem; }
+  .process-sidebar { position: static; }
+  .test-grid { grid-template-columns: 1fr; }
+  #book { grid-template-columns: 1fr; gap: 3rem; }
+  footer { grid-template-columns: 1fr; gap: 2rem; }
+  .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+  #cursor { display: none; }
+  body { cursor: auto; }
+  .btn-main, .btn-ghost, .form-select { cursor: pointer; }
+}
+
+@media (max-width: 600px) {
+  #stats { grid-template-columns: 1fr; }
+  .stat-block { border-right: none; border-bottom: 1px solid rgba(240,235,224,0.07); }
+}
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--acid); }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div class="noise"></div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    ◆ NEXUS-7 AUGMENTATION CLINIC &nbsp;&nbsp;&nbsp; ◆ WALK-INS ACCEPTED &nbsp;&nbsp;&nbsp; ◆ NO INSURANCE REQUIRED &nbsp;&nbsp;&nbsp; ◆ NEURAL INTERFACES BACK IN STOCK &nbsp;&nbsp;&nbsp; ◆ UNIT #0423 FULLY OPERATIONAL &nbsp;&nbsp;&nbsp; ◆ FLESH IS TEMPORARY. UPGRADES ARE FOREVER &nbsp;&nbsp;&nbsp; ◆ NEXUS-7 AUGMENTATION CLINIC &nbsp;&nbsp;&nbsp; ◆ WALK-INS ACCEPTED &nbsp;&nbsp;&nbsp; ◆ NO INSURANCE REQUIRED &nbsp;&nbsp;&nbsp; ◆ NEURAL INTERFACES BACK IN STOCK &nbsp;&nbsp;&nbsp; ◆ UNIT #0423 FULLY OPERATIONAL &nbsp;&nbsp;&nbsp; ◆ FLESH IS TEMPORARY. UPGRADES ARE FOREVER &nbsp;&nbsp;&nbsp;
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">NEXUS-7<sup>CLINIC</sup></div>
+  <div class="nav-status">● UNIT #0423 — OPERATIONAL</div>
+  <div class="nav-right">
+    <span>EST. 2031 // VARANASI-SECTOR 9</span><br>
+    <a href="#services">Services</a>
+    <a href="#process">Process</a>
+    <a href="#book">Book</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Augmentation clinic // Est. 2031</div>
+
+    <h1 class="hero-headline">
+      <span class="word-flesh">FLESH</span>
+      <span class="word-is">IS</span>
+      <span class="word-optional">OPTIONAL</span>
+    </h1>
+
+    <div class="hero-bottom">
+      <p class="hero-desc">
+        NEXUS-7 is a <strong>full-spectrum augmentation clinic</strong> operating since 2031. We replace, enhance, and integrate organic components with precision-engineered cybernetic systems. <strong>No waitlist. No judgement.</strong> Consultation in 48 hours.
+      </p>
+      <div class="hero-cta">
+        <a href="#book" class="btn-main">Book Consultation</a>
+        <a href="#services" class="btn-ghost">View Services</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-tag">// CLIENT INTAKE SCAN</div>
+    <ul class="spec-list">
+      <li class="spec-item"><span class="spec-label">Clinic Status</span><span class="spec-val green">OPEN</span></li>
+      <li class="spec-item"><span class="spec-label">Current Queue</span><span class="spec-val">4 units</span></li>
+      <li class="spec-item"><span class="spec-label">Neural Stock</span><span class="spec-val green">Available</span></li>
+      <li class="spec-item"><span class="spec-label">Ocular Units</span><span class="spec-val">3 left</span></li>
+      <li class="spec-item"><span class="spec-label">Skeletal Kits</span><span class="spec-val green">In stock</span></li>
+      <li class="spec-item"><span class="spec-label">Bio-Regs</span><span class="spec-val red">Low stock</span></li>
+      <li class="spec-item"><span class="spec-label">Anesthesia</span><span class="spec-val green">Ready</span></li>
+      <li class="spec-item"><span class="spec-label">Next slot</span><span class="spec-val">Thu 06:00</span></li>
+      <li class="spec-item"><span class="spec-label">Warranty</span><span class="spec-val">Lifetime</span></li>
+      <li class="spec-item"><span class="spec-label">Pain waiver</span><span class="spec-val red">Required</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- WARNING BAND -->
+<div class="warning-band">
+  <div class="warning-icon">⚠</div>
+  <div class="warning-text">
+    ALL PROCEDURES ARE IRREVERSIBLE. NEXUS-7 ACCEPTS NO LIABILITY FOR EXISTENTIAL CRISES POST-AUGMENTATION. SIDE EFFECTS MAY INCLUDE: ENHANCED COGNITION, REDUCED SLEEP NEED, MILD IDENTITY RECONFIGURATION. &nbsp;&nbsp;&nbsp;&nbsp; ALL PROCEDURES ARE IRREVERSIBLE. NEXUS-7 ACCEPTS NO LIABILITY FOR EXISTENTIAL CRISES POST-AUGMENTATION. SIDE EFFECTS MAY INCLUDE: ENHANCED COGNITION, REDUCED SLEEP NEED, MILD IDENTITY RECONFIGURATION. &nbsp;&nbsp;&nbsp;&nbsp;
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-header">
+    <h2 class="services-title">AVAILABLE<br><span>PROCEDURES</span></h2>
+    <p class="services-intro">
+      Every procedure is performed by our team of licensed cyberneticists with a minimum 800 hours of augmentation experience. All hardware is sourced from verified tier-1 manufacturers. We do not cut corners. We do cut tissue.
+    </p>
+  </div>
+
+  <div class="services-layout">
+    <div class="svc span2">
+      <div class="svc-num">// 001</div>
+      <h3 class="svc-name">Neural Interface<br>Installation</h3>
+      <p class="svc-desc">Our flagship procedure. 4096-channel cortical electrode array implanted via sub-millimeter robotic surgery. Direct thought-to-device command latency: 0.3ms. Compatible with all NEXUS-certified hardware. Full OS integration in 72 hours post-op.</p>
+      <div class="svc-price">FROM ₹4,80,000 // 8–12 HOUR PROCEDURE</div>
+      <div class="svc-big-num">01</div>
+    </div>
+    <div class="svc">
+      <div class="svc-num">// 002</div>
+      <h3 class="svc-name">Ocular Replacement</h3>
+      <p class="svc-desc">Biomechanical eye unit with 200x zoom, full AR overlay, UV/IR spectrum, and biometric read. Zero blind spot.</p>
+      <div class="svc-price">FROM ₹1,90,000</div>
+      <div class="svc-big-num">02</div>
+    </div>
+    <div class="svc">
+      <div class="svc-num">// 003</div>
+      <h3 class="svc-name">Skeletal Reinforcement</h3>
+      <p class="svc-desc">Subdermal titanium-carbon lattice bonded directly to the skeletal frame. Compression resistance 14x baseline. Non-detectable on standard X-ray.</p>
+      <div class="svc-price">FROM ₹3,20,000</div>
+    </div>
+    <div class="svc">
+      <div class="svc-num">// 004</div>
+      <h3 class="svc-name">Limb Replacement</h3>
+      <p class="svc-desc">Full prosthetic with nerve-mesh haptic feedback, variable grip force 0–800N, and detachable tool adapters. Feels like yours. Performs better.</p>
+      <div class="svc-price">FROM ₹2,40,000</div>
+    </div>
+    <div class="svc span2">
+      <div class="svc-num">// 005</div>
+      <h3 class="svc-name">Bio-Regulator Bloodstream Deploy</h3>
+      <p class="svc-desc">Nanoscale autonomous agents injected into the bloodstream. Continuously regulate cortisol, oxygen delivery, and cellular repair. Eliminates chronic illness, optimizes metabolic output, and extends projected lifespan 15–30 years. One-time injection. Irreversible.</p>
+      <div class="svc-price">FROM ₹6,50,000 // CONSULTATION MANDATORY</div>
+      <div class="svc-big-num">05</div>
+    </div>
+    <div class="svc">
+      <div class="svc-num">// 006</div>
+      <h3 class="svc-name">Mesh Network Node</h3>
+      <p class="svc-desc">Sub-dermal short-range comms implant. Encrypted P2P with other NEXUS units up to 5km. No phone needed.</p>
+      <div class="svc-price">FROM ₹80,000</div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="stat-block">
+    <span class="stat-num acid">847K</span>
+    <div class="stat-desc">Augmented units<br>operational globally</div>
+  </div>
+  <div class="stat-block">
+    <span class="stat-num">99.4%</span>
+    <div class="stat-desc">Procedure success rate<br>across all categories</div>
+  </div>
+  <div class="stat-block">
+    <span class="stat-num acid">16</span>
+    <div class="stat-desc">Years in operation<br>since 2031</div>
+  </div>
+  <div class="stat-block">
+    <span class="stat-num">0.3ms</span>
+    <div class="stat-desc">Neural interface<br>command latency</div>
+  </div>
+</div>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="process-sidebar">
+    <div class="process-label">// How it works</div>
+    <h2 class="process-title">THE<br>PROCEDURE</h2>
+    <p class="process-note">
+      Every client goes through the same protocol regardless of procedure type. We don't rush. We don't cut corners. From intake scan to final integration test — typically 3–7 days depending on procedure complexity.
+    </p>
+  </div>
+
+  <div class="process-steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-body">
+        <h3 class="step-title">Intake Scan & Assessment</h3>
+        <p class="step-desc">Full biological baseline mapping using our 128-point sensor array. Blood panel, neural activity scan, structural bone density, organ function index. We need to know what we're working with before we touch anything.</p>
+        <div class="step-meta">DURATION: 3–4 HRS // NO FASTING REQUIRED</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-body">
+        <h3 class="step-title">Consultation & Consent</h3>
+        <p class="step-desc">One-on-one with your assigned cyberneticist. We walk through every detail of the procedure, risks, integration timeline, and post-op protocol. You sign. You understand. No surprises in the operating room.</p>
+        <div class="step-meta">DURATION: 1–2 HRS // LEGALLY BINDING WAIVER</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-body">
+        <h3 class="step-title">Procedure</h3>
+        <p class="step-desc">Performed under general anaesthesia in our sterile theatre. Robotic-assisted surgical systems handle the precision work. Human cyberneticists oversee and intervene where required. You won't feel a thing. Until you wake up.</p>
+        <div class="step-meta">DURATION: 4–14 HRS DEPENDING ON PROCEDURE</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-body">
+        <h3 class="step-title">Integration & Calibration</h3>
+        <p class="step-desc">48–72 hours in our recovery bay while your nervous system maps itself to the new hardware. Our neural integration AI monitors sync rate in real time. We don't release you until calibration hits 95%+.</p>
+        <div class="step-meta">DURATION: 48–72 HRS // MEALS PROVIDED</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">05</div>
+      <div class="step-body">
+        <h3 class="step-title">Discharge & Lifetime Support</h3>
+        <p class="step-desc">You leave fully operational. Firmware updates pushed wirelessly. Hardware faults covered under lifetime warranty. Emergency support line active 24/7. You are now a NEXUS-7 client. Permanently.</p>
+        <div class="step-meta">SUPPORT: LIFETIME // FIRMWARE: OTA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="test-header">
+    <div class="test-label">// Client Logs</div>
+    <h2 class="test-title">FIELD <span>REPORTS</span></h2>
+  </div>
+
+  <div class="test-grid">
+    <div class="test-card">
+      <p class="test-quote">"I booked for ocular replacement on a Thursday. By Monday I could read licence plates from 400 metres. By Wednesday I stopped wearing glasses I hadn't owned in two years out of muscle memory. The adjustment period was three days. I've had it six months. I forget it's not original equipment."</p>
+      <div class="test-source">
+        <div class="test-avatar">AK</div>
+        <div>
+          <div class="test-name">Arjun K.</div>
+          <div class="test-role">Civil Engineer, Pune</div>
+        </div>
+      </div>
+      <div class="test-aug">AUG: OCULAR UNIT V3 // BILATERAL</div>
+    </div>
+    <div class="test-card">
+      <p class="test-quote">"My neural interface synced to my work terminal in under an hour. I type 0 words per minute now. I just think it. The latency is genuinely imperceptible. My output has tripled. My colleagues think I hired a ghost writer."</p>
+      <div class="test-source">
+        <div class="test-avatar">SM</div>
+        <div>
+          <div class="test-name">Shreya M.</div>
+          <div class="test-role">Senior Analyst, Bengaluru</div>
+        </div>
+      </div>
+      <div class="test-aug">AUG: NEURAL INTERFACE // 4096-CH</div>
+    </div>
+    <div class="test-card">
+      <p class="test-quote">"Lost my right arm in 2039. Waited three years to do anything about it. I wish I hadn't waited. NEXUS-7 gave me a hand that can feel temperature, pressure, texture. Better than the original in every measurable way except sentimentality."</p>
+      <div class="test-source">
+        <div class="test-avatar">RV</div>
+        <div>
+          <div class="test-name">Rohan V.</div>
+          <div class="test-role">Contractor, Delhi</div>
+        </div>
+      </div>
+      <div class="test-aug">AUG: LIMB REPLACEMENT // RIGHT ARM</div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOK -->
+<section id="book">
+  <div class="book-left">
+    <div class="book-label">// Start here</div>
+    <h2 class="book-title">BOOK YOUR<br><span>CONSULTATION</span></h2>
+    <p class="book-desc">
+      No commitment. No deposit. Just a 90-minute intake session with one of our cyberneticists. We map your biology, discuss your goals, and give you an honest assessment of what's possible — and what isn't.<br><br>
+      Walk-ins accepted Tuesday through Saturday, 07:00–18:00 at Sector 9 facility, Varanasi. Remote video consultation available for international clients.
+    </p>
+  </div>
+
+  <div class="book-right">
+    <div class="form-group">
+      <label class="form-label">Full Name</label>
+      <input type="text" class="form-input" placeholder="Your name" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Contact</label>
+      <input type="text" class="form-input" placeholder="+91 00000 00000" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Procedure of Interest</label>
+      <select class="form-select">
+        <option value="" disabled selected>Select procedure</option>
+        <option>Neural Interface Installation</option>
+        <option>Ocular Replacement</option>
+        <option>Skeletal Reinforcement</option>
+        <option>Limb Replacement</option>
+        <option>Bio-Regulator Deploy</option>
+        <option>Mesh Network Node</option>
+        <option>Full Stack (Multiple)</option>
+        <option>Not sure — need assessment</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Preferred Date</label>
+      <input type="date" class="form-input" style="color-scheme: dark;" />
+    </div>
+    <button class="btn-main" style="width:100%; text-align:center; justify-content:center;" onclick="this.textContent='REQUEST SENT ✓'; this.style.background='#1a6b00'; this.style.color='#c8ff00';">
+      Request Slot
+    </button>
+    <p class="form-disclaimer">
+      By submitting, you consent to a bio-scan on arrival. Consultation is non-binding. All records are encrypted and stored off-grid.
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <span class="nav-logo">NEXUS-7</span>
+    <p>Full-spectrum augmentation clinic operating since 2031. Sector 9 Facility, Varanasi. Walk-ins accepted Tue–Sat.</p>
+  </div>
+  <div>
+    <div class="footer-col-title">Procedures</div>
+    <ul class="footer-links">
+      <li><a href="#services">Neural Interface</a></li>
+      <li><a href="#services">Ocular Replacement</a></li>
+      <li><a href="#services">Skeletal Reinforcement</a></li>
+      <li><a href="#services">Limb Replacement</a></li>
+      <li><a href="#services">Bio-Regulator Deploy</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="footer-col-title">Clinic</div>
+    <ul class="footer-links">
+      <li><a href="#process">Our Process</a></li>
+      <li><a href="#testimonials">Client Logs</a></li>
+      <li><a href="#book">Book Consultation</a></li>
+      <li><a href="#">Emergency Line</a></li>
+      <li><a href="#">Warranty Claims</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2047 NEXUS-7 AUGMENTATION CLINIC // ALL PROCEDURES IRREVERSIBLE</span>
+    <span>UNIT #0423 // SECTOR 9 // VARANASI</span>
+  </div>
+</footer>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+});
+document.querySelectorAll('a, button, .svc, .step, .test-card, .spec-item').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+});
+
+// Scroll reveal
+const reveals = document.querySelectorAll('.svc, .step, .stat-block, .test-card');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+reveals.forEach((el, i) => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = `opacity 0.5s ease ${i * 0.05}s, transform 0.5s ease ${i * 0.05}s, background 0.25s`;
+  io.observe(el);
+});
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+
+// Live clock in ticker area — tiny detail
+const statusEl = document.querySelector('.nav-status');
+if (statusEl) {
+  setInterval(() => {
+    const now = new Date();
+    const t = now.toTimeString().slice(0,8);
+    statusEl.textContent = `● UNIT #0423 — ${t}`;
+  }, 1000);
+}
+</script>
+</body>
+</html>
